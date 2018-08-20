@@ -226,7 +226,11 @@ class DXFBase(object):
             auth_url = urlparse.urlunparse(url_parts)
             r = self._sessions[0].get(auth_url, headers=headers)
             _raise_for_status(r)
-            self.token = r.json()['token']
+            response_json = r.json()
+            if response_json.get('token'):
+                self.token = response_json.get('token')
+            else:
+                self.token = response_json.get('access_token')
             return self._token
         else:
             self._headers = headers
