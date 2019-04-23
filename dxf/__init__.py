@@ -215,10 +215,16 @@ class DXFBase(object):
                 scope = info['scope']
             url_parts = list(urlparse.urlparse(info['realm']))
             query = urlparse.parse_qs(url_parts[4])
-            query.update({
-                'service': info['service'],
-                'scope': scope
-            })
+            service = info.get('service')
+            if service:
+                query.update({
+                    'service': service,
+                    'scope': scope
+                })
+            else:
+                query.update({
+                    'scope': scope
+                })
             url_parts[4] = urlencode(query, True)
             url_parts[0] = 'https'
             if self._auth_host:
